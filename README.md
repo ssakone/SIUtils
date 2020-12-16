@@ -1,5 +1,5 @@
 # SIUtils
-Provide Api to use many C++ function throught qml
+Provide Api to use many Qt/C++ function in qml
 
 #### INSTALLATION
 
