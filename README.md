@@ -38,9 +38,9 @@ Utils.qtVersion()
 ```
 #### FEATURES
 
-| Qt/C++ function           | Qml Call |
+| Qt/C++ function           | Qml Call                  |
 | ------------------------- | ------------------------- |
-| QFile read text from file   | (return str) SIUtils.readText(path)  |
+| QFile read text from file | SIUtils.readText(path)    |
 
 
 #### COPYRIGHT
