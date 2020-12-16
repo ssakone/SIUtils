@@ -9,7 +9,8 @@ Provide Api to use many Qt/C++ function in qml
 add_subdirectory(SIUtils)
 
 ...
-target_link_libraries(... SIUtils)```
+target_link_libraries(... SIUtils)
+```
 
 - In your main c++ file
 ```
@@ -20,6 +21,7 @@ Utils::init();
 ```
 
 - In your main qml file
+
 ```
 import SIUtils 1.0
 
