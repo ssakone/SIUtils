@@ -4,14 +4,16 @@ Provide Api to use many Qt/C++ function in qml
 #### INSTALLATION
 
 - In your project CMakeFiles.txt
-```...
+```
+...
 add_subdirectory(SIUtils)
 
 ...
 target_link_libraries(... SIUtils)```
 
 - In your main c++ file
-```#include <utils.h>
+```
+#include <utils.h>
 ...
 
 Utils::init();
