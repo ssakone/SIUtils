@@ -240,7 +240,7 @@ int Utils::imageToPdf(const QStringList paths, const QString saveTo, QJSValue ob
         return false;
 
     QPdfWriter* writer = new QPdfWriter(&file);
-    writer->setPageMargins(QMargins(0,0,0,0));
+    writer->setPageMargins(QMargins(5,0,0,0));
     writer->setResolution(96);
     QPainter* p = new QPainter(writer);
     writer->setPageSize(QPageSize(QPageSize::A4));
@@ -250,7 +250,7 @@ int Utils::imageToPdf(const QStringList paths, const QString saveTo, QJSValue ob
         if(count!=0)
             writer->newPage();
         QPixmap pixmap(path);
-        p->drawPixmap(0,0,793,1122, pixmap);
+        p->drawPixmap(0,0,pixmap);
         count++;
     }
     delete p;
