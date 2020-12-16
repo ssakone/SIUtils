@@ -1,9 +1,9 @@
 # SIUtils
 Provide Api to use many C++ function throught qml
 
-# INSTALLATION
+#### INSTALLATION
 
-In your project CMakeFiles.txt
+- In your project CMakeFiles.txt
 ```
 ...
 
@@ -15,7 +15,7 @@ target_link_libraries(... SIUtils)
 
 ```
 
-In your main c++ file
+- In your main c++ file
 ```
 ...
 
@@ -27,7 +27,7 @@ Utils::init();
 
 ```
 
-In your main qml file
+- In your main qml file
 ```
 import SIUtils 1.0
 
@@ -36,9 +36,9 @@ import SIUtils 1.0
 Utils.qtVersion()
 
 ```
-# FEATURES
+#### FEATURES
 
 
 
-# COPYRIGHT
+#### COPYRIGHT
 Many Options here was extracted from: https://github.com/Aseman-Land/QtAseman Core.
