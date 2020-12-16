@@ -17,6 +17,10 @@
 #include <QDir>
 #include <QStringList>
 #include <QTextDocument>
+#include <QPdfWriter>
+#include <QPainter>
+#include <QPageSize>
+#include <QPixmap>
 #ifndef Q_OS_IOS
 #include <QProcess>
 #endif
@@ -68,7 +72,6 @@ public Q_SLOTS:
     static QDateTime datefromString(const QString &dt, const QString &format = QString());
     static QString msecToTimeString(qint32 msec, const QString &format = QString());
     static QDate dateAddDays(const QDate &date, int days);
-
     static QStringList toStringList(const QVariant &value);
     static QVariantMap toVariantMap(const QVariant &value);
     static QVariantList toVariantList(const QVariant &value);
@@ -94,6 +97,7 @@ public Q_SLOTS:
 
     static QSize imageSize(const QString &path);
     int extractZip(const QString &path,const QString &dir,QJSValue obj);
+    int imageToPdf(const QStringList paths, const QString saveTo,  QJSValue obj);
     int runCMD(const QString &path);
     int execCMD(const QString &path);
     int runPy(const QString &path, const QJSValue argg);

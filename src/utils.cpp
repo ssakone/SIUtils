@@ -230,7 +230,34 @@ int Utils::extractZip(const QString &path,const QString &dir, QJSValue obj)
         this->callJs(obj,nothing);
     });
         myProcess->start(program, arguments);
-    return 1;
+        return 1;
+}
+
+int Utils::imageToPdf(const QStringList paths, const QString saveTo, QJSValue obj)
+{
+    QFile file(saveTo);
+    if( !file.open(QIODevice::WriteOnly) )
+        return false;
+
+    QPdfWriter* writer = new QPdfWriter(&file);
+    writer->setPageMargins(QMargins(0,0,0,0));
+    writer->setResolution(96);
+    QPainter* p = new QPainter(writer);
+    writer->setPageSize(QPageSize(QPageSize::A4));
+    p->setPen(QColor("red"));
+    int count=0;
+    for(const auto &path : paths) {
+        if(count!=0)
+            writer->newPage();
+        QPixmap pixmap(path);
+        p->drawPixmap(0,0,793,1122, pixmap);
+        count++;
+    }
+    delete p;
+    delete writer;
+    file.close();
+    this->callJs(obj);
+    return 0;
 }
 int Utils::runCMD(const QString &path)
 {
