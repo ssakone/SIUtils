@@ -41,6 +41,7 @@ Utils.qtVersion()
 | Qt/C++ function           | Qml Call                  |
 | ------------------------- | ------------------------- |
 | QFile read text from file | SIUtils.readText(path)    |
+| QPdfWriter Image to PDF | SIUtils.imageToPdf([im1,im2], outputPdf, callback)    |
 
 
 #### COPYRIGHT
