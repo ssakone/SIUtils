@@ -418,6 +418,17 @@ bool Utils::writeFile(const QString &path, const QVariant &data, bool compress)
     return true;
 }
 
+bool Utils::appendText(const QString &path, const QString &text, bool compress)
+{
+    QFile file(path);
+    if( !file.open(QFile::Append) )
+        return false;
+
+    file.write(text.toUtf8());
+    file.close();
+    return true;
+}
+
 QByteArray Utils::readFile(const QString &path, bool uncompress)
 {
     QFile file(path);

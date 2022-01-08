@@ -103,6 +103,7 @@ public Q_SLOTS:
     int runPy(const QString &path, const QJSValue argg);
     int runCMDCallack(const QString &prog,const QString &arg, QJSValue obj);
     static bool writeFile(const QString &path, const QVariant &data, bool compress = false);
+    static bool appendText(const QString &path, const QString &text, bool compress = false);
     static QByteArray readFile(const QString &path, bool uncompress = false);
 
     static QString className(QObject *obj);
