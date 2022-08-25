@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 
 project(SIUtils LANGUAGES CXX)
 
-find_package(Qt6 REQUIRED COMPONENTS
+find_package(Qt6 COMPONENTS
   Core
   Gui
   Qml
@@ -10,22 +10,19 @@ find_package(Qt6 REQUIRED COMPONENTS
   QuickControls2
   Svg
   Xml
+  REQUIRED
 )
 
-set(SOURCES
-  src/utils.cpp
+qt6_add_library(SIUtils STATIC)
+qt6_add_qml_module(SIUtils
+    URI SIUtils
+    VERSION 1.0
+    SOURCES
+        src/utils.h
+        src/utils.cpp
 )
 
-set(HEADERS
-  include/utils.h
-)
-
-
-add_library(SIUtils STATIC ${HEADERS} ${SOURCES})
-target_compile_definitions(SIUtils PUBLIC)
-target_include_directories(SIUtils PUBLIC include)
-
-target_link_libraries(SIUtils PUBLIC
+target_link_libraries(SIUtils PRIVATE
   Qt::Core
   Qt::Gui
   Qt::Svg

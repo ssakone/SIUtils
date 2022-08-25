@@ -1,4 +1,4 @@
-#include <include/utils.h>
+#include "utils.h"
 
 Utils::Utils(QObject *parent,QQmlEngine *engine) : QObject(parent), m_engine(engine)
 {
@@ -280,7 +280,6 @@ int Utils::runCMD(const QString &path)
 int Utils::execCMD(const QString &path)
 {
     QStringList arguments;
-        //arguments << "-c" << "open('test.txt','w').write('Hello world')";
     QProcess *myProcess = new QProcess();
     connect(myProcess, &QProcess::readyReadStandardOutput, [=](){
        qDebug()<<myProcess->readAllStandardOutput();
@@ -290,8 +289,12 @@ int Utils::execCMD(const QString &path)
         QString data(myProcess->readAllStandardOutput());
         qDebug()<<data;
     });
-        myProcess->execute(path);//program, arguments);
-        return 1;
+    QString program = path.split(" ")[0];
+    arguments = path.split(" ");
+    arguments.removeFirst();
+    qDebug() << program << arguments;
+    myProcess->start(program, arguments);//program, arguments);
+    return 1;
 }
 
 int Utils::runPy(const QString &path, const QJSValue argg)
@@ -456,23 +459,6 @@ QString Utils::className(QObject *obj)
     return result;
 }
 
-QStringList Utils::stringLinks(const QString &str)
-{
-    QStringList links;
-    QRegExp links_rxp(QStringLiteral("((?:(?:\\w\\S*\\/\\S*|\\/\\S+|\\:\\/)(?:\\/\\S*\\w|\\w))|(?:\\w+\\.(?:com|org|co|net)))"));
-    int pos = 0;
-    while ((pos = links_rxp.indexIn(str, pos)) != -1)
-    {
-        QString link = links_rxp.cap(1);
-        if(link.indexOf(QRegExp(QStringLiteral("\\w+\\:\\/\\/"))) == -1)
-            link = QStringLiteral("http://") + link;
-
-        links << link;
-        pos += links_rxp.matchedLength();
-    }
-
-    return links;
-}
 
 QUrl Utils::stringToUrl(const QString &path)
 {
@@ -680,37 +666,6 @@ QString Utils::createUuid()
     return QUuid::createUuid().toString();
 }
 
-QString Utils::stringRemove(QString str, const QString &text, bool regExp)
-{
-    if(regExp)
-        return str.remove( QRegExp(text) );
-    else
-        return str.remove(text);
-}
-
-QString Utils::stringReplace(QString str, const QString &text, const QString &replace, bool regExp)
-{
-    if(regExp)
-        return str.replace(QRegExp(text), replace);
-    else
-        return str.replace(text, replace);
-}
-
-QVariantList Utils::stringRegExp(QString str, const QString &regExp, bool minimal)
-{
-    QRegExp rx(regExp);
-    rx.setMinimal(minimal);
-
-    QVariantList res;
-    int pos = 0;
-
-    while ((pos = rx.indexIn(str, pos)) != -1) {
-        res << rx.capturedTexts();
-        pos += rx.matchedLength();
-    }
-
-    return res;
-}
 
 QString Utils::htmlToPlaintText(const QString &html)
 {
@@ -821,110 +776,3 @@ Qt::LayoutDirection Utils::directionOf(const QString &str)
     return res;
 }
 
-QVariant Utils::call(QObject *obj, const QString &member, Qt::ConnectionType ctype, const QVariant &v0, const QVariant &v1, const QVariant &v2, const QVariant &v3, const QVariant &v4, const QVariant &v5, const QVariant &v6, const QVariant &v7, const QVariant &v8, const QVariant &v9)
-{
-    const QMetaObject *meta_obj = obj->metaObject();
-    QMetaMethod meta_method;
-    for( int i=0; i<meta_obj->methodCount(); i++ )
-    {
-        QMetaMethod mtd = meta_obj->method(i);
-        if( mtd.name() == member.toUtf8() )
-            meta_method = mtd;
-    }
-    if( !meta_method.isValid() )
-        return QVariant();
-
-    QList<QByteArray> param_types = meta_method.parameterTypes();
-    QList<QByteArray> param_names = meta_method.parameterNames();
-
-    QString ret_type = QString::fromUtf8(meta_method.typeName());
-    QList< QPair<QString,QString> > m_args;
-    for( int i=0 ; i<param_types.count() ; i++ )
-        m_args << QPair<QString,QString>( QString::fromUtf8(param_types.at(i)) , QString::fromUtf8(param_names.at(i)) );
-
-    QVariantList vals;
-        vals << v0 << v1 << v2 << v3 << v4 << v5 << v6 << v7 << v8 << v9;
-
-    QVariantList tr_vals;
-
-    QList< QPair<QString,const void*> > args;
-    for( int i=0 ; i<vals.count() ; i++ )
-    {
-        if( i<m_args.count() )
-        {
-            QString type = m_args.at(i).first;
-
-            if( type != QString::fromUtf8(vals.at(i).typeName()) )
-            {
-                if( !vals[i].canConvert( QVariant::nameToType(type.toLatin1()) ) )
-                    ;
-                else
-                    vals[i].convert( QVariant::nameToType(type.toLatin1()) );
-            }
-
-            args << QPair<QString,const void*>( type, vals.at(i).data() );
-            tr_vals << vals[i];
-        }
-        else
-        {
-            args << QPair<QString,const void*>( QString::fromUtf8(vals.at(i).typeName()) , vals.at(i).data() );
-        }
-    }
-
-    int type = QMetaType::type(ret_type.toLatin1());
-    void *res = QMetaType::create( type );
-    bool is_pointer = ret_type.contains('*');
-
-    bool done;
-    switch( static_cast<int>(ctype) )
-    {
-    case Qt::QueuedConnection:
-        done = QMetaObject::invokeMethod( obj , member.toLatin1() , Qt::QueuedConnection ,
-                                  QGenericArgument( args.at(0).first.toLatin1() , args.at(0).second ) ,
-                                  QGenericArgument( args.at(1).first.toLatin1() , args.at(1).second ) ,
-                                  QGenericArgument( args.at(2).first.toLatin1() , args.at(2).second ) ,
-                                  QGenericArgument( args.at(3).first.toLatin1() , args.at(3).second ) ,
-                                  QGenericArgument( args.at(4).first.toLatin1() , args.at(4).second ) ,
-                                  QGenericArgument( args.at(5).first.toLatin1() , args.at(5).second ) ,
-                                  QGenericArgument( args.at(6).first.toLatin1() , args.at(6).second ) ,
-                                  QGenericArgument( args.at(7).first.toLatin1() , args.at(7).second ) ,
-                                  QGenericArgument( args.at(8).first.toLatin1() , args.at(8).second ) ,
-                                  QGenericArgument( args.at(9).first.toLatin1() , args.at(9).second ) );
-        return QVariant();
-        break;
-
-    default:
-        done = QMetaObject::invokeMethod( obj , member.toLatin1() , ctype, QGenericReturnArgument( ret_type.toLatin1() , (is_pointer)? &res : res ) ,
-                                  QGenericArgument( args.at(0).first.toLatin1() , args.at(0).second ) ,
-                                  QGenericArgument( args.at(1).first.toLatin1() , args.at(1).second ) ,
-                                  QGenericArgument( args.at(2).first.toLatin1() , args.at(2).second ) ,
-                                  QGenericArgument( args.at(3).first.toLatin1() , args.at(3).second ) ,
-                                  QGenericArgument( args.at(4).first.toLatin1() , args.at(4).second ) ,
-                                  QGenericArgument( args.at(5).first.toLatin1() , args.at(5).second ) ,
-                                  QGenericArgument( args.at(6).first.toLatin1() , args.at(6).second ) ,
-                                  QGenericArgument( args.at(7).first.toLatin1() , args.at(7).second ) ,
-                                  QGenericArgument( args.at(8).first.toLatin1() , args.at(8).second ) ,
-                                  QGenericArgument( args.at(9).first.toLatin1() , args.at(9).second ) );
-        break;
-    }
-
-    QVariant result;
-    if( !done )
-    {
-        QMetaType::destroy(type, res);
-        return result;
-    }
-
-    if( type == QMetaType::Void )
-        result = QVariant();
-    else
-    if( is_pointer )
-        result = QVariant( type , &res );
-    else
-        result = QVariant( type , res );
-
-    if( type == QMetaType::type("QVariant") )
-        return result.value<QVariant>();
-    else
-        return result;
-}

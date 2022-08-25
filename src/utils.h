@@ -108,11 +108,6 @@ public Q_SLOTS:
 
     static QString className(QObject *obj);
 
-    static QStringList stringLinks(const QString &str);
-    static QString stringRemove(QString str, const QString &text, bool regExp = false);
-    static QString stringReplace(QString str, const QString &text, const QString &replace, bool regExp = false);
-    static QVariantList stringRegExp(QString str, const QString &regExp, bool minimal = true);
-
     static QUrl stringToUrl(const QString &path);
     static QString urlToLocalPath(const QUrl &url);
 
@@ -140,6 +135,9 @@ public Q_SLOTS:
 
     static QString htmlToPlaintText(const QString &html);
 
+    static QString currentDirectory(){
+        return QDir::currentPath();
+    }
     static void copyDirectory( const QString & src, const QString & dst );
     static bool copy( const QString & src, const QString & dst );
     static bool rename( const QString & src, const QString & dst );
@@ -149,17 +147,6 @@ public Q_SLOTS:
     static QVariant property( QObject *obj, const QString & property );
 
     static Qt::LayoutDirection directionOf( const QString & str );
-    static QVariant call( QObject *obj, const QString & member, Qt::ConnectionType type,
-                                                                const QVariant & v0 = QVariant(),
-                                                                const QVariant & v1 = QVariant(),
-                                                                const QVariant & v2 = QVariant(),
-                                                                const QVariant & v3 = QVariant(),
-                                                                const QVariant & v4 = QVariant(),
-                                                                const QVariant & v5 = QVariant(),
-                                                                const QVariant & v6 = QVariant(),
-                                                                const QVariant & v7 = QVariant(),
-                                                                const QVariant & v8 = QVariant(),
-                                                                const QVariant & v9 = QVariant() );
 
 
 private:
